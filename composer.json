@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "google/recaptcha": "^1.2",
+        "google/recaptcha": "^2.1",
         "danielstjules/php-pretty-datetime": "dev-master",
         "smarty/smarty": "^4.5.7",
         "mobiledetect/mobiledetectlib": "^2.8",
