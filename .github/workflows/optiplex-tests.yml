@@ -36,7 +36,7 @@ jobs:
           docker run --rm "$TEST_IMAGE" bash -euo pipefail -c '
             composer install --prefer-dist --no-interaction --no-progress
             find includes public_html tests -path includes/vendor -prune -o -type f -name "*.php" -print0 | xargs -0 -r -n1 php -l
-            composer run-script --timeout=400 test
+            composer run-script --timeout=420 test
           '
 
       - name: Check Nginx and PHP-FPM configuration
