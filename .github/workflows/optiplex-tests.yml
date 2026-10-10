@@ -33,7 +33,7 @@ jobs:
 
       - name: Run syntax checks and PHPUnit in Docker
         run: |
-          docker run --rm --tmpfs /tmp:rw,size=256m "$TEST_IMAGE" bash -euo pipefail -c '
+          docker run --rm "$TEST_IMAGE" bash -euo pipefail -c '
             composer install --prefer-dist --no-interaction --no-progress
             find includes public_html tests -path includes/vendor -prune -o -type f -name "*.php" -print0 | xargs -0 -r -n1 php -l
             composer run-script --timeout=300 test -- --debug
