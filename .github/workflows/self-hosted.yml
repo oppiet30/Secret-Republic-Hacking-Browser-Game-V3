@@ -1,0 +1,49 @@
+name: Local Runner Tests
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: secret-republic-local-runner
+  cancel-in-progress: false
+
+jobs:
+  local-tests:
+    if: github.repository == 'oppiet30/Secret-Republic-Hacking-Browser-Game-V3' && github.ref == 'refs/heads/master'
+    runs-on: [self-hosted, linux, x64, secretrepublic]
+    timeout-minutes: 30
+    env:
+      TEST_IMAGE: secretrepublic:local-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Verify Docker access
+        run: |
+          docker version
+          docker info > /dev/null
+
+      - name: Build application image
+        run: docker build --tag "$TEST_IMAGE" .
+
+      - name: Run syntax checks and PHPUnit in Docker
+        run: |
+          docker run --rm "$TEST_IMAGE" bash -euo pipefail -c '
+            composer install --prefer-dist --no-interaction --no-progress
+            find includes public_html tests -path includes/vendor -prune -o -type f -name "*.php" -print0 | xargs -0 -r -n1 php -l
+            composer test
+          '
+
+      - name: Check Nginx and PHP-FPM configuration
+        run: |
+          docker run --rm "$TEST_IMAGE" nginx -t
+          docker run --rm "$TEST_IMAGE" php-fpm -t
+
+      - name: Remove this run's image
+        if: always()
+        run: docker image rm "$TEST_IMAGE" || true

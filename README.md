@@ -366,6 +366,51 @@ As soon as it is created, the page will be available at `/pages/NAME` e.g. `http
 ./includes/vendor/phpunit/phpunit/phpunit tests
 ```
 
+## Local GitHub Actions runner (Fedora)
+
+The `Local Runner Tests` workflow can run this repository's tests on your own Linux x64 machine. It uses the existing Docker image for PHP 8.4 and Composer/PHPUnit; only Docker, Git, and the GitHub runner application are needed on the host.
+
+This workflow is manually triggered and accepts only this repository's `master` branch. The existing hosted workflows continue to test pull requests. Because workflow code has access to the runner account and Docker daemon, only dispatch trusted code; use a dedicated runner machine or VM when possible. Docker access can grant host administrator privileges.
+
+### Register the runner
+
+1. Check Docker as the account that will run the runner:
+
+   ```bash
+   docker version
+   docker info
+   ```
+
+   If Docker needs `sudo`, configure access for the runner account before continuing. With a system Docker daemon, adding that account to the `docker` group requires logging out and back in. Do not use `sudo` to run `config.sh` or `run.sh`.
+
+2. Open this repository's **Settings → Actions → Runners → New self-hosted runner**, select **Linux / x64**, and use GitHub's current download and checksum commands. Extract into a dedicated directory such as `~/actions-runner-secret-republic`, outside your live website checkout.
+
+3. Run GitHub's generated `./config.sh --url ... --token ...` command from that directory. The registration token is temporary; do not commit it or send it in a message. Give the runner a name such as `dell-secret-republic` and add the custom label **`secretrepublic`** when prompted. Keep the default `self-hosted`, `linux`, and `x64` labels and the default `_work` directory.
+
+4. Start the runner in the foreground:
+
+   ```bash
+   ./run.sh
+   ```
+
+   Wait for `Listening for Jobs`; the repository's runner page should show **Idle**. The machine must stay online while jobs execute. No inbound firewall port or Apache configuration is needed: the runner connects outward to GitHub.
+
+### Run the first job
+
+After this workflow is merged into `master`, open **Actions → Local Runner Tests → Run workflow**, select **master**, and run it. The workflow checks Docker access, builds the application image, installs test dependencies inside the container, lints application/test PHP files, runs PHPUnit, and validates Nginx/PHP-FPM configuration. Containers are removed after each command and the workflow removes its uniquely tagged image. Shared Docker build caches are retained.
+
+If the job stays queued, confirm the runner is online and has the exact `secretrepublic` label. If Docker reports permission denied, fix access for the runner account and restart the runner. Detailed output appears in the Actions job log; runner diagnostics are in its `_diag` directory.
+
+After the foreground run works, stop it with Ctrl+C and optionally install a Linux service from the same runner directory:
+
+```bash
+sudo ./svc.sh install "$(whoami)"
+sudo ./svc.sh start
+sudo ./svc.sh status
+```
+
+Stop it with `sudo ./svc.sh stop`. This runner uses a separate `_work` checkout and does not deploy or alter the live game database. The tests currently cover unit and SQLite integration behavior; they do not add MariaDB gameplay integration coverage.
+
 ## Contributors
 
 If your pull request is merged, I will add your name here. Thank you for your contribution!
