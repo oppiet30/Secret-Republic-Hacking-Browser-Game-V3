@@ -19,7 +19,7 @@ jobs:
       TEST_IMAGE: secretrepublic:local-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
 
