@@ -62,11 +62,11 @@ class QClass extends Alpha
       //Process console input commands
       if ($this->consoleInput = strip_tags($_POST['console'])) {
         $micro = microtime(true);
-        if ($_SESSTION['lastConsole'] <= ($micro - 0.8)) {
+        if ($_SESSION['lastConsole'] <= ($micro - 0.8)) {
 
-          $_SESSTION['lastConsole'] = $micro;
+          $_SESSION['lastConsole'] = $micro;
           $this->console();
-        } //$_SESSTION['lastConsole'] <= ($micro - 0.8)
+        } //$_SESSION['lastConsole'] <= ($micro - 0.8)
         else
           $this->consoleOutput = 'Server is busy';
       } //$this->consoleInput = $_POST['console']
@@ -193,7 +193,7 @@ class QClass extends Alpha
 
     if (!$_POST['json'] && $done) {
 
-      $this->redirect(C_URL);
+      $this->redirect(URL);
 
     } //!$_POST['json'] && $done
     elseif ($done)
@@ -243,6 +243,7 @@ class QClass extends Alpha
     );
 
     if ($this->questTask['instance_id']) {
+      $instance = array();
       $array = array(
         'bounces',
         'ddos',
@@ -445,6 +446,7 @@ class QClass extends Alpha
     $party = $party && !$quest['party'] ? false : $party;
 
     $task = array();
+    $data = array();
 
     $takes = $quest['time'] * 60;
 
@@ -557,7 +559,7 @@ class QClass extends Alpha
           $server['mac']               = $this->generateMacAddress();
 		  $server['myServer'] = true;
           $service['process_id_start'] = rand(1, 999);
-          $service['welcome']          = "This server is property of " . $user['username'] . '.';
+          $service['welcome']          = "This server is property of " . $this->user['username'] . '.';
           $service['type']             = "ssh";
           $service['encryption']       = 0;
 
