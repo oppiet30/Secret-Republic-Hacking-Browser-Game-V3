@@ -145,7 +145,7 @@
     <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
     
 
-{if $messenger and ($messenger|count or $GET.currentPage eq "quests/quests")}
+{if ($messenger and $messenger|count) or $GET.currentPage eq "quests/quests"}
 		<!-- MESSENGER -->
 		<script type="text/javascript" src="{$config.url}layout/messenger/js/messenger.min.js"></script>
 		<script type="text/javascript" src="{$config.url}layout/messenger/js/messenger-theme-future.js"></script>
