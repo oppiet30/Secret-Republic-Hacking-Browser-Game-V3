@@ -505,7 +505,7 @@ trait SSHCommandsManagement
   function areFilesRunning($files, $serviceFiles)
   {
 	  //isset($file['requiredToRun']) && (!($f = $this->fileExists($file['requiredToRun'], $this->service['files'])) || !$f['running']))
-      if (count($files))
+      if (is_array($files))
 	  foreach ($files as $file)
 		  if (!($file = $this->fileExists($file, $serviceFiles)) || !$file['running'])
 		  	return false;
@@ -514,7 +514,7 @@ trait SSHCommandsManagement
 
   function checkparameters($parameters, $console)
   {
-	  if (count($parameters))
+	  if (is_array($parameters))
 	  foreach ($parameters as $key => $parameter)
 		  if ($console[$key + 2] != $parameter)
 		  	return false;
