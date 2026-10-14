@@ -177,7 +177,8 @@ class QClass extends Alpha
       if (!$notepad['notepad_id'])
         $this->db->insert('quest_notepad', array(
           'user_id' => $this->user['id'],
-          'task_id' => $this->questTask['id']
+          'task_id' => $this->questTask['id'],
+          'content' => ''
         ));
 
       $this->templateVariables['notepad'] = $notepad['content'];
