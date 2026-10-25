@@ -121,14 +121,17 @@ function replaceComponentWithComponent($server, &$component, &$componentToReplac
     $componentToReplace = $componentToReplace[0];
   }
 
+  // 'freeSlot' is a string, not a component row; resolve the target before
+  // touching the database so a PHP 8 "offset on string" error can no longer
+  // abort the mount after the item has already left storage.
+  $isFreeSlot = ($componentToReplace === 'freeSlot');
+  $replacedRelationId = is_array($componentToReplace) && !empty($componentToReplace['relation_id'])
+    ? $componentToReplace['relation_id']
+    : null;
 
-  $db->where('storage_id', $component['storage_id'])->delete('storage', 1);
-
-
-
-  if ($componentToReplace['relation_id'])
+  if ($replacedRelationId)
   {
-    $db->where('relation_id', $componentToReplace['relation_id'])
+    $db->where('relation_id', $replacedRelationId)
        ->delete('server_components');
 
     $newStorage = array(
@@ -138,7 +141,7 @@ function replaceComponentWithComponent($server, &$component, &$componentToReplac
     );
     $db->insert('storage', $newStorage);
   }
-  elseif ($componentToReplace == 'freeSlot')
+  elseif ($isFreeSlot)
   {
     $componentToReplace = array('name' => "Free slot");
   }
@@ -148,7 +151,12 @@ function replaceComponentWithComponent($server, &$component, &$componentToReplac
     'component_id' => $component['component_id'],
     'damage' => $component['damage'],
   );
-  $db->insert('server_components', $insertData);
+
+  if (!$db->insert('server_components', $insertData))
+    return false;
+
+  // Only remove the item from storage once it is on the server.
+  $db->where('storage_id', $component['storage_id'])->delete('storage', 1);
 
   $server->recomputeServerResources();
   return true;

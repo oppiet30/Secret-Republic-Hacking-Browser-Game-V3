@@ -90,7 +90,7 @@ elseif (isset($_POST['mount']))
 }
 else
 {
-	$availableSlots = $uclass->getTotalStorageSlots();
+	$availableSlots = $uclass->getAvailableStorageSlots();
 
 	$storage = $uclass->getUserStorage();
 
