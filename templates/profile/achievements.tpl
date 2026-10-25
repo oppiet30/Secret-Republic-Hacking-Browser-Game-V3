@@ -11,7 +11,9 @@
 						{/if}{$achievement.name}</small>
 						</div>
 						<div class="panel-body text-center " title="{$achievement.description}"><Br/>
+							{if $achievement.image}
                     		<img src="{$config.url}layout/img/achievement/{$achievement.image}" class="imageOpacity"/><br/><br/>
+							{/if}
 						</div>
 						
 					</div>

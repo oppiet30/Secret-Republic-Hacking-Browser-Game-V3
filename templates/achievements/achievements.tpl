@@ -14,7 +14,9 @@
 		<div class="panel-body">
 			<div class="row">
 				<div class="col-xs-3">
+				{if $achievement.image}
 				<img src="{$config.url}layout/img/achievement/{$achievement.image}"/>
+				{/if}
 				</div>
 				<div class="col-xs-9">
 					{$achievement.description}

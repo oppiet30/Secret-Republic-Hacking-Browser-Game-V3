@@ -242,7 +242,7 @@ Layer {$layerIndex}
 		<div class="panel-body">
 		{foreach from = $player['skills'] key = skill item = level}
 		
-			{if in_array($layerIndex, array_keys($theskills[$skill]["layer"]))}
+			{if isset($theskills[$skill]["layer"]) && in_array($layerIndex, array_keys($theskills[$skill]["layer"]))}
 				<div class="row">
 					<div class="col-md-6">
 						<button disabled>
@@ -272,7 +272,7 @@ Layer {$layerIndex}
 		<div class="panel-heading">attack</div>
 		<div class="panel-body">
 		{foreach from = $player['skills'] key = skill item = level}
-			{if in_array(-$layerIndex, array_keys($theskills[$skill]["layer"]))}
+			{if isset($theskills[$skill]["layer"]) && in_array(-$layerIndex, array_keys($theskills[$skill]["layer"]))}
 				<div class="row">
 					<div class="col-md-6">
 						<button disabled>
@@ -316,7 +316,7 @@ Layer {$layerIndex}
 					{assign var = foundDefence value = false}
 					{foreach from=$server.server->skills key = skill item = data}
 						{assign var = foundDefence value = true}
-							{if in_array($layerIndex, array_keys($theskills[$skill]["layer"]))}
+							{if isset($theskills[$skill]["layer"]) && in_array($layerIndex, array_keys($theskills[$skill]["layer"]))}
 								<div class="row">
 									<div class="col-md-6">
 										<button disabled>{$layerIndex}
@@ -351,7 +351,7 @@ Layer {$layerIndex}
 				
 					{assign var = foundAttack value = false}
 					{foreach from=$server.server->skills key = skill item = data}
-							{if in_array(-$layerIndex, array_keys($theskills[$skill]["layer"]))}
+							{if isset($theskills[$skill]["layer"]) && in_array(-$layerIndex, array_keys($theskills[$skill]["layer"]))}
 								{assign var = foundAttack value = true}
 								<div class="row">
 									<div class="col-md-6">

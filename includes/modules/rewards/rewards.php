@@ -34,8 +34,18 @@ if ($GET["myReward"])
       }
 
       if (is_array($reward["achievements"]))
-        foreach($reward["achievements"] as &$achievement)
-          $achievement = $db->where("achievement_id", $achievement)->getOne("achievements", "name, image");
+      {
+        // Achievements are only defined when an administrator created them;
+        // unresolved ids would otherwise render an empty panel with a broken
+        // image (src=".../layout/img/achievement/").
+        $rewardAchievements = [];
+        foreach($reward["achievements"] as $achievementId)
+        {
+          $achievement = $db->where("achievement_id", $achievementId)->getOne("achievements", "name, image");
+          if ($achievement["name"]) $rewardAchievements[] = $achievement;
+        }
+        $reward["achievements"] = $rewardAchievements;
+      }
 
     $reward['components']   = $reward['components'] ? array_values(unserialize($reward['components'])) : [];
     $reward['applications'] = $reward['applications'] ? array_filter(unserialize($reward['applications']), function($app) { return $app['app_id']; }) : [];
