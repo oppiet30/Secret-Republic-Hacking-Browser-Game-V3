@@ -544,7 +544,7 @@ trait SSHCommandsManagement
 			$takes = $file['executionTime'];
 			$taskData = array('fileKey' => $file['key']);
 			$this->consoleOutput = "Executing..";
-            $this->addMinitask('file_run', $this->consoleOutput, $takes, $taskData);
+            $this->addMinitask('run_file', $this->consoleOutput, $takes, $taskData);
 		}
 		else
 		{
@@ -560,7 +560,7 @@ trait SSHCommandsManagement
         $this->completedObjective('run_file', $file['title'] . '|' . $this->connected['ip'] . ':' . $this->connected['port']);
 
 		if ($file['burst'])
-			$console->consoleOutput .= '<br/>Process finished executing.';
+			$this->consoleOutput .= '<br/>Process finished executing.';
 		else
         	$this->service['files'][$file['key']]['running'] = true;
         $this->update_quest();
