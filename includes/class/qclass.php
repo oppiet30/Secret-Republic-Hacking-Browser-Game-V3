@@ -12,10 +12,16 @@ class QClass extends Alpha
   use SSHCommandsManagement;
 
   private $connected;
-  private static $bouncesPerHost = 3;
-  private static $ddosPerHost = 3;
-  private static $userGameEmail = '@secretrepublic.net';
-  private static $cardinalOS = 'Cardinal OS V2.2';
+  // Instance properties, not static ones: the console commands read them as
+  // $this->... (ifconfig, ddos status, email forwarding). A declared static
+  // property never matches an instance read - it fell through to
+  // Alpha::__get() and came back null, so `ifconfig` printed an empty
+  // "Operating System:" line, DDOS status showed negative remaining counts and
+  // forwarded emails lost the @secretrepublic.net domain.
+  private $bouncesPerHost = 3;
+  private $ddosPerHost = 3;
+  private $userGameEmail = '@secretrepublic.net';
+  private $cardinalOS = 'Cardinal OS V2.2';
 
   function __construct(Container $container, &$questTask = null)
   {
