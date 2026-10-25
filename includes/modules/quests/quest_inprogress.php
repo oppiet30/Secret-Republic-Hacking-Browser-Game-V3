@@ -48,6 +48,13 @@ else
 
         $success[] = "Mission completed";
 
+        // Only party missions fill this in (further below). Without a default,
+        // count($participants) was a fatal TypeError on PHP 8 for solo missions:
+        // the reward got queued, then the request died before quests_user was
+        // written, so the mission looked unfinished and the next quest stayed
+        // locked even though the task had already been deleted.
+        $participants = array();
+
         $quest = $db->join('quests_user qu', 'qu.quest = q.id and qu.user_id = ' . $user['id'], 'left outer')->where("q.id", $qclass->questTask["questID"])
             ->getOne("quests q", "qu.id qu_id, type, money, experience, achievement_id, skillPoints, qu.created as done, times");
 
