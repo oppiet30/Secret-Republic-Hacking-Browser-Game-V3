@@ -148,6 +148,37 @@ final class AlphaInjectionTest extends TestCase
         $this->assertNull($a2->customProp);
     }
 
+    /**
+     * __get() returns by reference, so indirect writes into an unset dynamic
+     * property must persist. QClass relies on this during mission init
+     * ($this->questData['ips'] = generate_ips(...)); when __get() returned a
+     * reference to a local, the generated IPs were silently thrown away and
+     * missions ended up with empty host IPs.
+     */
+    public function testIndirectWriteToUnsetDynamicPropertyPersists(): void
+    {
+        $alpha = $this->makeAlpha();
+
+        $alpha->questData['ips'] = ['10.0.0.1'];
+        $alpha->questData['hosts'] = [];
+
+        $this->assertSame(['ips' => ['10.0.0.1'], 'hosts' => []], $alpha->questData);
+    }
+
+    public function testIndirectWriteToExistingDynamicPropertyArrayPersists(): void
+    {
+        $alpha = $this->makeAlpha();
+
+        $alpha->questData = ['ips' => []];
+        $alpha->questData['ips'][] = '10.0.0.2';
+        $alpha->questData['main'] = '10.0.0.2';
+
+        $this->assertSame(
+            ['ips' => ['10.0.0.2'], 'main' => '10.0.0.2'],
+            $alpha->questData
+        );
+    }
+
     // ------------------------------------------------------------------
     // Isset checks
     // ------------------------------------------------------------------

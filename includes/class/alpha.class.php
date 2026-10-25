@@ -59,12 +59,15 @@ class Alpha {
         return $this->container->taskclass();
       default:
         // Fall through to _dynamicProps for subclass-specific data
-        // (e.g. loginSystem, beg_used_memory, page_start, detectDevice)
-        if (array_key_exists($name, $this->_dynamicProps)) {
-            return $this->_dynamicProps[$name];
+        // (e.g. loginSystem, beg_used_memory, page_start, detectDevice).
+        // Auto-create the slot when it does not exist yet: since __get()
+        // returns by reference, indirect writes such as
+        // `$this->questData['ips'] = ...` must land in real storage.
+        // Returning a reference to a local variable silently dropped them.
+        if (!array_key_exists($name, $this->_dynamicProps)) {
+            $this->_dynamicProps[$name] = null;
         }
-        $null = null;
-        return $null;
+        return $this->_dynamicProps[$name];
     }
   }
 
