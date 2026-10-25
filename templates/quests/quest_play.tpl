@@ -2,7 +2,7 @@
 {if $GET.objectiveView eq "full"}
 <div class="row mb10">
   <div class="col-xs-4">
-    <a href="{$url}objectiveView/no" ><button><span class="glyphicon glyphicon-arrow-left"></span></button></a>
+    <a href="{$config.url}quests" ><button><span class="glyphicon glyphicon-arrow-left"></span></button></a>
   </div>
 </div>
 <div class="well black">
@@ -90,7 +90,7 @@
         {if $result}{$result}<br/>{/if}
       </div>
       <div class="text-right">
-        <em><small><a href="{$url}history/view">console history</a> - <a onclick="add_input('/help');">help</a></small></em>
+        <em><small><a href="{$config.url}quests/history">console history</a> - <a onclick="add_input('/help');">help</a></small></em>
       </div>
     </div>
     <div class="row mb10">
@@ -138,7 +138,7 @@
           <small><em></em></small>
         </div>
         <div class="col-xs-8 text-right">
-          <small><em><a href="{$url}objectiveView/full">read in full screen</a></em></small>
+          <small><em><a href="{$config.url}quests/objectiveView/full">read in full screen</a></em></small>
         </div>
       </div>
       <article id="objectiveStory">
