@@ -549,7 +549,11 @@ trait ConsoleManagement
   function damageSoftwareThroughUsage($softwareWhichInfluences, $damage)
   {
 	  global $theskills;
-	  require('includes/constants/skills.php');
+	  // Must not be a CWD-relative require: under the web SAPI the working
+	  // directory is public_html/, so 'includes/constants/skills.php' could not
+	  // be opened and the request died with an uncaught E_COMPILE_ERROR (the
+	  // AJAX console got an HTML error page and silently showed nothing).
+	  require_once ABSPATH . 'includes/constants/skills.php';
 	  $skills = array();
 	  foreach ($theskills as $skill => $s)
 		  foreach ($s['commands'] as $c=>$inf)
@@ -565,7 +569,7 @@ trait ConsoleManagement
 		  order by rand() limit 1",
 		  array($this->user['server']));
 	  	  $damage = ceil($damage/count($apps));
-		  require_once ('includes/class/class.server.php');
+		  require_once (ABSPATH . 'includes/class/class.server.php');
 		  $server= new Server($this->container);
 		  foreach($apps as $app)
 			  $server->dealAppDamage($app, $damage);
