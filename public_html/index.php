@@ -25,7 +25,9 @@ unset( $path[count($path) - 1]);
 
 $container = new Container();
 
-$smarty = new Smarty;
+$smarty = new Smarty\Smarty;
+require_once(ABSPATH . 'includes/class/SmartyPhpFunctionsExtension.php');
+$smarty->addExtension(new SmartyPhpFunctionsExtension());
 $smarty->setTemplateDir(implode('/', $path) . '/' . 'templates');
 $smarty->setCompileDir(implode('/', $path) . '/' . 'includes/templates_c');
 $smarty->setCacheDir(implode('/', $path) . '/' . 'includes/cache');

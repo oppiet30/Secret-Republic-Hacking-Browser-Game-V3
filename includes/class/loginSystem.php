@@ -108,7 +108,7 @@ class LoginSystem extends Alpha
 
     if (!session('detectDevice'))
 	{
-        	$this->_dynamicProps['detectDevice'] = new Mobile_Detect;
+        	$this->_dynamicProps['detectDevice'] = new \Detection\MobileDetect;
 		    $_SESSION['detectDevice']['mobile'] = $this->_dynamicProps['detectDevice']->isMobile();
           $_SESSION['detectDevice']['table'] = $this->_dynamicProps['detectDevice']->isTable();
 	}
