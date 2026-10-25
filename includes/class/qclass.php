@@ -146,11 +146,16 @@ class QClass extends Alpha
 
     unset($this->questTask['data'], $this->questTask['questData']);
 
-    $this->_dynamicProps['connected'] =& $this->questData['connected'];
-    $this->_dynamicProps['connected']['ip']   = $this->_dynamicProps['connected']['ip'] ? $this->_dynamicProps['connected']['ip'] : $this->questData['main'];
-    $this->_dynamicProps['connected']['port'] = $this->_dynamicProps['connected']['port'] ? $this->_dynamicProps['connected']['port'] : 22;
-    $this->_dynamicProps['host'] =& $this->questData['hosts'][$this->_dynamicProps['connected']['ip']];
-    $this->_dynamicProps['service'] =& $this->_dynamicProps['host']['services'][$this->_dynamicProps['connected']['port']];
+    // $connected is a declared (private) property of QClass, so it does NOT go
+    // through Alpha::__get()/__set(). Binding it to the quest data has to be a
+    // real reference assignment, otherwise the mission engine keeps seeing an
+    // empty connection (e.g. run_file objectives were checked as "file|:" and
+    // never matched "file|IP:port").
+    $this->connected =& $this->questData['connected'];
+    $this->connected['ip']   = !empty($this->connected['ip']) ? $this->connected['ip'] : $this->questData['main'];
+    $this->connected['port'] = !empty($this->connected['port']) ? $this->connected['port'] : 22;
+    $this->_dynamicProps['host'] =& $this->questData['hosts'][$this->connected['ip']];
+    $this->_dynamicProps['service'] =& $this->_dynamicProps['host']['services'][$this->connected['port']];
   }
 
   function finalProcessing()
