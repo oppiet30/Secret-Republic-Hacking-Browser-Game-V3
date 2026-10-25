@@ -104,7 +104,10 @@ jQuery.fn.questPlay = function(userOptions)
           check_output(data);
           console.log(data);
          },"json") .fail(function(data) {
-    	
+          // Without this the request could die server-side (PHP fatal error ->
+          // HTML error page -> JSON parse error) and the player saw nothing:
+          // the command was echoed locally but produced no output at all.
+          add_console("<span style='color:#ff8080'>No response from the server. The command may not have been executed &mdash; check the console and try again.</span>", true);
   		});;
     }
     function check_output(data){
@@ -112,7 +115,7 @@ jQuery.fn.questPlay = function(userOptions)
       if(data.result){				
         add_console(system+""+data.result, true);
       }else if (data.error){
-        add_console(system+""+data.result, true);
+        add_console(system+""+data.error, true);
       }
       
       if (data.unknownCommand)

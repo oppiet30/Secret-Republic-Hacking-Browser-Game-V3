@@ -556,25 +556,34 @@ trait ConsoleManagement
 	  require_once ABSPATH . 'includes/constants/skills.php';
 	  $skills = array();
 	  foreach ($theskills as $skill => $s)
-		  foreach ($s['commands'] as $c=>$inf)
-		  	if ($c==$softwareWhichInfluences)
-	  		{$skills[] = $skill; break;}
-	  if (count($skills))
-	  {
-		  $apps = 
-		  $this->db->rawQuery("
-		  select sa.*, a.* from server_apps sa
-		  left outer join applications a on a.app_id = sa.app_id
-		  where sa.server_id = ? and a.skill_id in (".implode(",",$skills).")
-		  order by rand() limit 1",
-		  array($this->user['server']));
-	  	  $damage = ceil($damage/count($apps));
-		  require_once (ABSPATH . 'includes/class/class.server.php');
-		  $server= new Server($this->container);
-		  foreach($apps as $app)
-			  $server->dealAppDamage($app, $damage);
-		  
-	  }
-	  
+		  if (!empty($s['commands']) && is_array($s['commands']))
+			  foreach ($s['commands'] as $c => $inf)
+				  if ($c == $softwareWhichInfluences) {
+					  $skills[] = $skill;
+					  break;
+				  }
+	  if (!count($skills))
+		  return;
+
+	  $apps =
+	  $this->db->rawQuery("
+	  select sa.*, a.* from server_apps sa
+	  left outer join applications a on a.app_id = sa.app_id
+	  where sa.server_id = ? and a.skill_id in (".implode(",",$skills).")
+	  order by rand() limit 1",
+	  array(isset($this->user['server']) ? $this->user['server'] : 0));
+
+	  // Nothing installed to damage (a fresh account has no server_apps rows at
+	  // all). Dividing by count($apps) then raised DivisionByZeroError, which
+	  // killed the whole console request before it could log the command or
+	  // answer the AJAX call, so the player saw absolutely nothing happen.
+	  if (empty($apps))
+		  return;
+
+	  $damage = ceil($damage/count($apps));
+	  require_once (ABSPATH . 'includes/class/class.server.php');
+	  $server= new Server($this->container);
+	  foreach($apps as $app)
+		  $server->dealAppDamage($app, $damage);
   }
 }

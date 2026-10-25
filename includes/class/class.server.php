@@ -368,7 +368,7 @@ class Server extends Alpha {
     if (!$app['process_id'])
       $app = $this->db->join('servers s', 's.server_id = sa.server_id', 'left outer')->where('process_id', $app)->getOne('server_apps sa', 'sa.server_id, damage, process_id, s.user_id, running');
     else
-      $app = array_merge($app, $this->db->where('server_id', $component['server_id'])->getOne('servers', 'user_id'));
+      $app = array_merge($app, $this->db->where('server_id', $app['server_id'])->getOne('servers', 'user_id'));
 
     if (!$app['server_id'])
       return;
