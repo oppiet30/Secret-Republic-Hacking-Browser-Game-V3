@@ -43,8 +43,12 @@ class Container
 
     /**
      * Retrieve a service by name.
+     *
+     * Returns by reference so Alpha::__get() can hand out a real reference to
+     * array services (config, user). Without this, `$this->user['exp'] += $x`
+     * writes into a throw-away copy and the change is lost.
      */
-    public function get(string $name)
+    public function &get(string $name)
     {
         if (array_key_exists($name, $this->services)) {
             return $this->services[$name];

@@ -208,4 +208,20 @@ final class ContainerTest extends TestCase
         $this->container->set('svc', 'from-set');
         $this->assertSame('from-set', $this->container->get('svc'));
     }
+
+    /**
+     * Alpha::__get() hands out `&$container->get('user')` so gameplay code can
+     * do `$this->user['exp'] += 30`. That only works when get() returns by
+     * reference; otherwise the write lands in a copy and is silently lost.
+     */
+    public function testGetReturnsByReferenceForIndirectWrites(): void
+    {
+        $this->container->set('user', ['id' => 1, 'exp' => 0]);
+
+        $user = &$this->container->get('user');
+        $user['exp'] += 30;
+        unset($user);
+
+        $this->assertSame(30, $this->container->get('user')['exp']);
+    }
 }

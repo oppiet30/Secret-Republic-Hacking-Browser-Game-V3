@@ -125,6 +125,20 @@ final class AlphaInjectionTest extends TestCase
         $this->assertSame(7, $a2->user['id']);
     }
 
+    /**
+     * Indirect writes to the user array must reach the container. UserClass
+     * relies on this (add_exp(), addEnergy()) to persist stat changes.
+     */
+    public function testIndirectWriteToUserArrayUpdatesContainer(): void
+    {
+        $this->container->set('user', ['id' => 7, 'exp' => 0]);
+
+        $alpha = $this->makeAlpha();
+        $alpha->user['exp'] += 30;
+
+        $this->assertSame(30, $this->container->get('user')['exp']);
+    }
+
     public function testTwoAlphaInstancesShareTemplateVars(): void
     {
         $a1 = $this->makeAlpha();
