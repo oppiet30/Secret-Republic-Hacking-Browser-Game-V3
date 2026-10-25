@@ -7,7 +7,7 @@
 </div>
 <div class="well black">
   <article id="objectiveStory">
-    {$quest.objective.story}
+    {if $quest.objective.story}{$quest.objective.story}{else}<em>This step has no briefing text. Use the console to continue.</em>{/if}
   </article>
 </div>
 {elseif $paused}
@@ -138,7 +138,7 @@
           <small><em></em></small>
         </div>
         <div class="col-xs-8 text-right">
-          <small><em><a href="{$config.url}quests/objectiveView/full">read in full screen</a></em></small>
+          {if $quest.objective.story}<small><em><a href="{$config.url}quests/objectiveView/full">read in full screen</a></em></small>{/if}
         </div>
       </div>
       <article id="objectiveStory">

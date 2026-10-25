@@ -67,6 +67,14 @@ final class QuestTemplateLinksTest extends TestCase
             $template,
             'The full-screen back button must return to a clean /quests URL'
         );
+
+        // Quest 79 ("Basic Hacking") has objectives with no story text at all,
+        // so an always-visible link opened a blank page and looked broken.
+        $this->assertMatchesRegularExpression(
+            '~\{if \$quest\.objective\.story\}[^\n]*\{\$config\.url\}quests/objectiveView/full~',
+            $template,
+            'The full-screen link must be hidden when the current objective has no story'
+        );
     }
 
     public function testEveryMissionTemplateRouteResolvesToAModule(): void
